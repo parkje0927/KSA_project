@@ -29,7 +29,7 @@
 
 (3) Class Diagram
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Use%20Case%20Diagram.png" width= "400px" height="300px" title="Class Diagram" alt="Class Diagram">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Class%20Diagram.png" width= "400px" height="300px" title="Class Diagram" alt="Class Diagram">
 
 
 
@@ -106,8 +106,7 @@
 
 - 결과 화면
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/Image/result.png
-" width= "400px" height="300px" title="Test" alt="Test">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/Image/result.png" width= "400px" height="300px" title="Test" alt="Test">
 
 
 
