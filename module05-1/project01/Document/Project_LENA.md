@@ -17,19 +17,19 @@
 
 (1) Use Case Diagram
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Use%20Case%20Diagram.png" width= "400px" height="300px" title="Use Case Diagram" alt="Use Case Diagram">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Use%20Case%20Diagram.png" title="Use Case Diagram" alt="Use Case Diagram">
 
 
 
 (2) Sequence Diagram
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Sequence%20Diagram.png" width= "400px" height="300px" title="Sequence Diagram" alt="Sequence Diagram">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Sequence%20Diagram.png" title="Sequence Diagram" alt="Sequence Diagram">
 
 
 
 (3) Class Diagram
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Class%20Diagram.png" width= "400px" height="300px" title="Class Diagram" alt="Class Diagram">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/FlowChart/Class%20Diagram.png" title="Class Diagram" alt="Class Diagram">
 
 
 
@@ -106,10 +106,10 @@
 
 - 결과 화면
 
-<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/Image/result.png" width= "400px" height="300px" title="Test" alt="Test">
+<img src="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/Image/result.png" title="result" alt="Test">
 
 
 
 - 출력된 이미지
 
-<img src="https://raw.githubusercontent.com/parkje0927/KSA_project/master/module05-1/project01/Image/saved%20Image.bmp" width= "400px" height="300px" title="Test Image" alt="Teste Image">
+<img src="https://raw.githubusercontent.com/parkje0927/KSA_project/master/module05-1/project01/Image/saved%20Image.bmp" title="saved Image" alt="Teste Image">
