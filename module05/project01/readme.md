@@ -25,4 +25,4 @@
     + 서아로 : MASK 연산, class 문서화
     + 이상아 : MASK 연산, sequence diagram
     + 이정진 : MASK 연산, use case diagram
-- **<a href="https://github.com/parkje0927/KSA_project/blob/master/module05-1/project01/Document/Project_LENA.md">프로젝트 문서화</a>**
+- **<a href="https://github.com/parkje0927/KSA_project/blob/master/module05/project01/Document/Project_LENA.md">프로젝트 문서화</a>**
