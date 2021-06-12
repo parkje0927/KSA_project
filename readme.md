@@ -28,6 +28,7 @@
 
 7. Module07
 - PCA 얼굴 인식
+  + Object Detection project
 
 8. Module08
 - CNN, SSD
