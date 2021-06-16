@@ -61,8 +61,69 @@
 	+ D(G(z))가 값이 더 크기 때문에 gradient가 소실되는 경우를 피할 수 있다. 
 	+ D 먼저 훈련, 그 다음에 G 훈련하고 이를 반복한다. 
 
+<hr>
+
 ### 2. GAN의 발전(1) : DCGAN
+- GAN 의 문제
+	+ very unstable training
+	+ uncontrollable result
+
+#### DCGAN의 기본원리
+- Convolution 연산
+	+ 주어진 함수에 g(kernel, filter)를 곱해서 더하는 연산
+	+ edge detector : 왼쪽과 오른쪽 차이가 큰 경우 활용
+	+ vertical detector
+	+ horizontal detector 
+
+- Convolution의 주요 속성
+	+ size(kernel의 크기) : 3X3, 4X4, 5X5, etc
+	+ stride(kernel의 적용 단위) : 1, 2, 3, etc => 몇 칸씩 건너서 할 것인지
+	+ padding(입력 영상의 주변) : None, 0, 1, etc => 0이면 연산의 크기가 줄어들지 않는다.
+
+- Convolution 연산
+	+ 1x28x28 : grayscale 28X28 사이즈
+	+ 5x5x5 : 5X5 사이즈 필터를 5개 사용한다 => 5가지 다른 성분을 뽑아낸다. 5X5의 경우에는 왼쪽, 오른쪽으로 2픽셀씩 공간이 필요하므로 총 4픽셀을 잃어버린다. 이는 주연이 아닌 조연이므로 상관 없다.
+	+ torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride = 1, padding = 0, 등,,, ) -> Conv2d(3, 10, 5, 1, 2) : 커널 사이즈는 5x5, stride는 한 칸씩, padding은 0
+
+- Transposed Convolution
+	+ Inverse Convolution with 3x3 filter
+	+ 영상의 크기가 커지는 연산
+	+ DConvolution 결과(복원된)와 원본이 같다고 보장할 수는 없다. 
+
+#### DCGAN의 개념
+- DCGAN
+	+ binary 보다 더 품질이 향상된 이미지를 얻을 수 있다. 
+	+ a strong candidate for unsupervised learning
+	+ walk in the latent space 
+	+ GAN + Convolutional layer
+
+#### DCGAN의 구성 요소(1) : generator
+- gen block
+	+ parameter : input_channels, output_channels, kernel, stride, final_layer
+	+ components for internal : transposed convolution + batch norm + ReLU
+	+ conponents for final : transposed convolution + tanh
+
+#### DCGAN의 구성 요소(2) : discriminator
+- disc block
+	+ parameter : input_channels, output_channels, kernel, stride, final_layer
+	+ components for internal : convolution + batch norm + LeakyReLU
+	+ conponents for final : convolution
+
+#### DCGAN의 구성 요소(3) : loss 함수 
+- fake.detach() : detach 는 gpu에서 cpu로 바꿔서 사용하겠다 이런 의미인데, cpu로 사용 시 이를 제거하고 사용해야할 수도 있다. 
+
+#### DCGAN의 구성 요소(4) : 훈련
+
+
+<hr>
+
+
 ### 3. GAN의 발전(2) : WGAN
+
+
+<hr>
+
+
 #### WGAN의 기본 원리 : Entropy
 - 정보 이론	
 	+ m : 정보를 포함하는 message
@@ -75,7 +136,6 @@
 
 - cross entropy
 	+ 두 확률 분포 p, q에 대해서 q를 이용해서 p를 설명할 때 필요한 정보량
-
 
   
 ### 4. GAN의 발전(3) : CGAN
