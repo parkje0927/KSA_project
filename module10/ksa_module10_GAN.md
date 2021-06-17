@@ -113,17 +113,18 @@
 - fake.detach() : detach 는 gpu에서 cpu로 바꿔서 사용하겠다 이런 의미인데, cpu로 사용 시 이를 제거하고 사용해야할 수도 있다. 
 
 #### DCGAN의 구성 요소(4) : 훈련
+- gen block 계산 
+	+ H_out = (H_in - 1) * stride -2 * padding + dilation * (kernel_size - 1) + output_padding + 1
+	+ 1) H_in = 1 / kernel_size, stride = 3, 2 -> 3x3
+	+ 2) H_in = 3 / kernel_size, stride = 4, 1 -> 6x6
+	+ 3) H_in = 6 / kernel_size, stride = 3, 2 -> 13x13
+	+ 4) H_in = 13 / kernel_size, stride = 4, 1 -> 28x28
 
 
 <hr>
 
 
 ### 3. GAN의 발전(2) : WGAN
-
-
-<hr>
-
-
 #### WGAN의 기본 원리 : Entropy
 - 정보 이론	
 	+ m : 정보를 포함하는 message
@@ -137,6 +138,63 @@
 - cross entropy
 	+ 두 확률 분포 p, q에 대해서 q를 이용해서 p를 설명할 때 필요한 정보량
 
+#### WGAN의 개념
+- GAN의 목적
+	+ Pdata(x) 와 P(z) 를 최대한 비슷하게 만들자 -> 이 둘의 거리를 최소로 만들자
+
+- cross entropy를 이용한 distribution의 거리 측정의 문제 -> gradient close to zero -> gradient vanishing
+	+ 해결책 : Earth Mover's Distance
+	+ 두 분포의 차이를 두 분포 사이의 거리로 정의
+	+ 하나의 분포를 다른 분포로 옮기는 작업을 earth move로 간주
+
+- Wasserstein distance
+	+ Earth Mover's Distance를 이용해서 정의
+	+ Discriminator -> Critic
+
+- WassersteinGAN의 loss 함수
+	+ Generator : minimize the distance
+	+ Critic : maximize the distance 
+	+ Gradient exploding : Gradient가 큰 경우, gradient descent method를 이용해서 구하는 값이 지나치게 커져서 수렴하기 못하는 경우
+	+ Gradient 의 절대값이 1에 가까운 상태를 유지할 것
+
+- integer(8bit, 32bit, 32bit) => giga
+
+#### WGAN의 개념(4) : gradient penalty 설계
+- gradient의 크기를 1이하로 유지 -> critic의 학습 능력을 제한
+- Gradient 가 1에 가까운 수로 나올 수 있도록 regularization을 이용
+- G(z)와 x를 보간해서 𝑥hat 생성 -> G(z)의 품질을 높여서 critic의 학습 속도를 조절
+
+
+<hr>
   
+
 ### 4. GAN의 발전(3) : CGAN
 ### 5. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
