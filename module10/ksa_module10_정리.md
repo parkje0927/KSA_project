@@ -114,7 +114,7 @@
 
 #### DCGAN의 구성 요소(4) : 훈련
 - gen block 계산 
-	+ H_out = (H_in - 1) * stride -2 * padding + dilation * (kernel_size - 1) + output_padding + 1
+	+ H_out = (H_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + output_padding + 1
 	+ 1) H_in = 1 / kernel_size, stride = 3, 2 -> 3x3
 	+ 2) H_in = 3 / kernel_size, stride = 4, 1 -> 6x6
 	+ 3) H_in = 6 / kernel_size, stride = 3, 2 -> 13x13
@@ -164,12 +164,88 @@
 - Gradient 가 1에 가까운 수로 나올 수 있도록 regularization을 이용
 - G(z)와 x를 보간해서 𝑥hat 생성 -> G(z)의 품질을 높여서 critic의 학습 속도를 조절
 
+#### DCGAN_CelebA
+- MNIST
+	+ 1x1x10 -> 28x28x1
+- CelebA
+	+ 1x1x10 -> 64x64x3 (ConvTransposed2d 를 통해)
+	+ 64x64x3 -> 1x1x1 (Conv2d 를 통해)
+- ConvTransposed2d, Conv2d 의 stride, kernel_size, padding 을 조절
+
+##### generator
+- H_out = (H_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + output_padding + 1
+- dilation => 1만 주고, output_padding => 0만 주고 있으므로 위 식은 다음과 같이 바뀐다.
+- H_out = (H_in - 1) * stride - 2 * padding + (kernel_size - 1) + 1
+- if) stride = 2, padding = 1, kernel_size = 4
+- H_out = (H_in - 1) * 2 - 2 + (4 - 1) + 1 = 2 * H_in
+- 1 -> 2 / 2 -> 4 / 4 -> 8 / 8 -> 16 / 16 -> 32 / 32 -> 64 => 6개의 Generator block 을 붙여야 한다 
+- 1 -> (H_in - 1) * 2 - 2 * padding + (4 - 1) + 1 = 4 -> padding = 0
+
+##### discriminator
+- if) stride = 2, kernel_size = 4, padding = 1
+- 64 -> floor((64 + 2 * padding - kernel_size) / 2 + 1) -> floor((64 + 2 * 1 - 4) / 2 + 1) = 32
+- 32 -> floor((32 + 2 * 1 - 4) / 2 + 1) = 16
+
 
 <hr>
   
 
 ### 4. GAN의 발전(3) : CGAN
-### 5. 
+#### CGAN의 개념
+- Conditional GAN
+- latent vector(noise vector), condition vector(one-hot vector)
+
+#### CGAN의 구성요소(1) : generator
+- parameter: input_channels, output_channels, kernel, stride, final_layer- components for internal	+ transposed convolution + batch norm + ReLU- components for final	+ Transposed convolution + tanh
+
+#### CGAN의 구성요소(2) : discriminator
+
+#### CGAN의 구성요소(3) : class input 생성
+- Latent vector와 one-hot vector의 concatenation
+
+#### CGAN의 구성요소(4) : loss 함수
+- class를 고려해서 loss 함수 생성
+
+#### CGAN의 구성요소(5) : training
+
+
+<hr>
+
+
+### 5. GAN의 응용(1) : pix2pix
+#### pix2pix의 개념
+- 한 영상으로부터 새로운 스타일의 영상을 생성하는 기법
+- pix2pix -> cycleGAN -> gauGAN
+#### pix2pix의 배경
+- Conditional GAN을 발전시킴
+#### pix2pix의 구조
+- G는 스케치 (x)에서 컬러 영상 (G(x))를 생성- D는 합성된 컬러 영상 G(x), 또는 실제 컬러 영상 (y)와 x를 비교해서 fake/real 을 판별
+#### pix2pix의 구성 요소 (1): generator
+- 같은 shape 끼리 concate를 한다. 
+- U-Net : Convolutional Networks for Biomedical Image Segmentation
+	+ endocer-decoder 구조
+	+ deconv-net 이라고도 불리움
+	+ x -> encoder -> latent vector -> decoder -> y
+
+	+ forward pass : encoder의 정보를 decode에 전달
+	+ backward pass : encoder의 gradient flow를 개선
+	+ 학습을 위해 encoder에서 뽑은 정보를 decoder에 전달
+
+- U-Net 구조를 이용한 generator(1)
+	+ 256x256x3 -> 1x1x512
+	+ 8 개의 encoder block	+ 각 encoder block은 conv – batch norm – Leaky ReLU로 구성	+ 256 x 256 x 3 -> 1 x 1 x 512
+
+- U-net 구조를 이용한 generator (2)	+ 8 개의 decoder block	+ 각 dencoder block은 transposed conv – batch norm – ReLU로 구성	+  1 x 1 x 512 -> 512 x 512 x 3
+
+- U-net 구조를 이용한 generator (3)	+ 8 개의 en-block을 가진 encoder와 8 개의 de-block을 가진 decoder	+ 512 x 512 x 3 -> 512 x 512 x 3	+ Skip connection
+	
+#### pix2pix의 구성 요소 (2): discriminator
+- PatchGAN 구조를 사용	+ 전통적 GAN에서는 discriminator가 전체 영상에 대해서 Real/Fake를 판정함	+ PatchGAN에서는 영상을 patch로 분할하여 각 영역의 Real/Fake를 판정함
+	+ prediction의 값이 0에 가까우면 fake
+	+ prediction의 값이 1에 가까우면 real#### pix2pix의 구성 요소 (3): loss 함수#### pix2pix의 구현#### pix2pix의 한계와 극복
+- Paired image에서만 적용 가능 => unpaired image-to-image translation
+
+### 6. GAN의 응용(2) : CycleGAN
 
 
 
