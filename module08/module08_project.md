@@ -32,4 +32,4 @@
 
 6. 테스트 결과(mean Average Precision 값, 테스트 결과 이미지
 
-![결과](C:\Users\user\Desktop\결과.png)
+![결과](https://github.com/parkje0927/KSA_project/blob/master/module08/%EA%B2%B0%EA%B3%BC.png)
