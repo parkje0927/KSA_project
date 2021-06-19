@@ -38,7 +38,8 @@
 <br>
 
 8. Module08
-- CNN, SSD
+- CNN & SSD
+  + SSD project
 <br>
 
 9. Module09
