@@ -48,5 +48,8 @@
 
 10. Module10
 - GAN
+- DCGAN
+- WGAN
+- CGAN
 <br>
 
