@@ -251,6 +251,15 @@
 - Paired image에서만 적용 가능 => unpaired image-to-image translation
 
 ### 6. GAN의 응용(2) : CycleGAN
+#### generator
+- pix2pix의 generator와 동일함
+	+ Generator : UNet + DCGAN + skip-connection
+	+ FeatureMap block, Constractor Block, Residual Block, Expander Block, FeatureMap Block
+
+- Cycle loss만 고려하고 GAN loss를 고려하지 않으면 결과가 안 좋아짐
+- GAN loss만 고려하고 cycle loss를 고려하지 않으면 mode collapse
+- GAN loss와 cycle loss를 함께 고려해야 좋은 결과가 나옴
+- identity loss는 원본의 색을 유지하도록 함
 
 
 
