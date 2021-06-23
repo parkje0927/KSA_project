@@ -51,5 +51,7 @@
 - DCGAN
 - WGAN
 - CGAN
+- pix2pix
+- CycleGAN
 <br>
 
