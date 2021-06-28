@@ -163,6 +163,123 @@
 	+ (3) 모델에 적합한 출력을 다루기가 간단함
 	+ (4) 언어가 아닌 이미지나 음성과 같은 모델들 간의 상호작용 가능, 멀티 모달 모델 구축 용이
 
+---
+
+### 6. 순환 신경망(RNN)
+#### 6.1 기본 순환 신경망
+##### RNN 소개
+- 재귀적인 성향
+- CNN과 다르게 hidden state 가 있다. 
+- 이전 time-step의 출력값이 들어가게 된다.
+- CNN : 표형태의 데이터, 영상이 입력으로 들어간다. 
+- RNN : 연속 데이터, 시계열 데이터가 입력으로 들어간다. sequential data, time-series data
+
+##### RNN 구조
+- 1) Single-layered RNN
+- input tensor
+	+ time 이 기본 단위가 된다. 
+	+ batch_size : 문장 / 1 : 단어 / input_size : 단어의 dimension
+- output tensor
+	+ batch_size :  / 1 :  / hidden_size : hidden-state size 
+- 2) Multi-layered RNN(위로 쌓는다.)
+- output tensor
+	+ Single-layered RNN과 달리, 마지막 layer의 hidden state가 output이 된다. 
+<br>
+
+- 기본 RNN 에서 은닉 상태는 곧 출력
+- Multi-layered RNN
+	+ 출력은 마지막 레이어의 모든 시간 스텝의 은닉 상태
+	+ 은닉 상태는 마지막 시간 스텝의 모든 레이어의 은닉 상태
+- Bi-directional RNN
+	+ 출력은 은닉 상태의 2배
+	+ 은닉 상태는 레이어 개수의 2배
+<br>
+
+- 생성 task가 아니면, 한번에 X 입력, 한번에 Y 출력
+
+##### RNN 활용 사례
+- 다대일 : 입력은 many , 출력은 one
+	+ 응용 사례 : 텍스트 분류
+	+ 벡터가 1개인거지 들어가는 값이 1개인 것은 아니다. 
+- 일대다 : 입력은 one, 출력은 mnay
+	+ 응용 사례 : 자연어 생성, 기계번역
+	+ 단어 하나가 입력이 들어가면 여러 개의 벡터가 나온다. 
+	+ 특정 단어 하나만 주어질 때, 뒤에 문장을 채워보기, 소설 쓰기, 작곡 등이 해당된다. 
+	+ seq2seq, encoder & decoder 구조이기도 하다. 
+- 다대다 : 입력, 출력 many
+	+ 응용 사례 : 문법 태깅, 형태소 분석
+- 문장 전체가 다 들어가는 경우는 다대일, 다대다이고, 문장의 일부가 들어가는 경우는 일대다이다. 
+<br>
+
+- 두 가지 접근법
+- 1) Non-autoregressive(non-generative)
+	+ 현재 상태가 앞, 뒤 상태를 통해서 결정되는 경우
+	+ 예) 품사 태깅(POS tagging, part of speech), 텍스트 분류(text classification)
+	+ Bidirectional RNN 사용(권장) => 앞, 뒤 문장에서 다 영향을 미치기 때문이다. 
+	+ 문장 전체를 읽어보고 task 수행(형태소, 품사, class 식별)
+	+ sequence 전체를 입력으로 받는다. 
+- 2) Autoregressive(generative)
+	+ 현재 상태가 과거의 상태에 의존해서 결정되는 경우
+	+ 예) 자연어 생성(NLG), 기계 번역(machine translation)
+	+ 일대다(one-to-many) 경우에 해당
+	+ Bidirectional RNN 사용 불가 => 모든 정보가 한 번에 주어지지 않기 때문이다.
+	+ 미래를 모르는 경우
+	+ 주로 sequence를 생성(챗봇, 기계 번역)
+
+##### RNN의 학습(Back-propagatio through time(BPTT))
+- 순방향 : 보통 입력값 x가 은닉층과 활성화 함수를 거쳐 h 와 출력값 y를 반환
+- 역방향 : 출력부터 모든 시간 스템에 적용되는 gradient를 모두 계산
+	+ RNN의 구조를 펼쳐보면(unfold), RNN을 시간 스텝 수만큼 히든 레이어를 가진 deep FNN으로 볼 수 있기 때문에 그와 동일한 방식으로 역전파를 수행(BPTT)
+	+ backward propagation 이 time 축으로 간다고 보면된다.
+
+#### 6.2 발전된 순환 신경망(Advanced RNN)
+- 심층 신경망의 고질적인 문제 : gradient 소실과 폭주 문제 피하기, 고속 옵티마이저, 과대적합을 피하기 위한 규제 방법, 미리 훈련된 층 재사용 -> gradient vanishing(어떤 곳으로도 수렴되지 않고 학습이 되지 않는 문제), 느린 수렴(속도의 문제), overfitting => 전형적인 머신러닝 문제이다. 이것이 딥러닝으로도 넘어왔고 응용 분야에 따라서 시각, NLP 등등에서 공통적으로 나타나는 문제이다. 
+	+ gradient vanishing 의 해결 방안 : He init(초기화를 잘 하기 위해), Activation(LeLU, LeakyLeLu / activation function 은 gradient vanishing 문제의 주요 원인이 된다.), Data normalization(BatchNormalization), Gradient Cilpping(RNN 사용하는 task 에서 널리 사용 됨 / gradient explosion 문제를 해결하기 위한 기법)
+<br>
+
+##### 그라디언트 소실 문제(gradient vanishing problem)
+- RNN은 각 time-stamp 마다 tanh, sigmoid 등 활성화 함수를 통과함.
+- 학습시 gradient 계산에서 이들을 미분하게 되면 0~1 사이 값을 반환하는 도함수
+- RNN은 BPTT로 학습되므로 깊은 뉴럴 네트워크를 통과하게 됨. 이때 gradient에 0~1 사이값이 여러 번 곱해지면 gradient가 0에 수렴하게 됨. 학습이 되지 않는 문제
+- 세타값이 업데이트가 안 되고, 학습이 안 되는 문제
+
+##### Long short-term memory(LSTM)
+- 그라디언트 소실 문제 해결 위해 제안됨
+- time-step 사이에 은닉 상태와 더불어 셀 상태도 함께 전달
+	+ cell state : 어떤 정보를 망각하고 기억할 지에 관한 판단이 반영된 정보 / 망각, 입력, 출력 게이트로 구성 
+- 망각 게이트(Forget gate) : 현재 time-step t의 입력값 x_t와 이전 히든 스테이트 h_(t-1)을 고려해, <b>이전 셀 스테이트를 얼마나 보존할 지 판단 => 이런 역할을 아는 것이 중요하다.</b>
+- 입력 게이트(Input gate) : 현재 time-step t의 입력값 x_t와 이전 히든 스테이트 h_(t-1)을 고려해, <b>셀 스테이트에 현재 상태에 대한 값을 얼마나 더할 지 판단</b>
+	+ cell state와 hidden state 는 보통 같은 차원이다. 
+	+ 256차원이라고 가정할 때, hidden state 는 256차원이다. 
+	+ time 축에 대한 gradient vanishing 은 해결 -> sequence 길이는 길어짐 but layer 더 쌓는 건 불가능(최대 4개 쌓으면 잘 돌아간다.)
+- 입력 게이트와 망각 게이트로부터 얻은 값을 통해 셀 스테이트 업데이트
+- 출력 게이트(Output gate) : 업데이트된 셀 스테이트와 x_t와 h_(t-1)을 고려해 히든 스테이트를 업데이트하고, 다음 time-step t+1로 전달
+
+##### Gated recurrent unit(GRU)
+- 게이트 순환 유닛
+- LSTM 보다 간소화되었으며, 별도의 셀 스테이트 없이 두 개의 게이트를 사용하여 그라디언트 소실 문제를 해결하고자 함
+- 리셋 게이트와 업데이트 게이트로 구성됨
+- 리셋 게이트(Reset gate) : 이전 히든 스테이트 h_(t-1)과 현재 입력 값 x_t를 고려해, 현재 입력 값을 히든 스테이트 h_t에 얼마나 반영할 지 판단
+- 업데이트 게이트(Update gate) : 히든 스테이트 h_(t-1)과 입력값 x_t로부터 z_t값을 생성하고, z_t를 기준으로 리셋 게이트로부터 반환된 값과 이전 히든 스테이트 중 어디에 얼만큼 가중치를 둘 지 판단
+<br>
+
+- LSTM은 기본 RNN에 비해 훨씬 많은 파라미터 가짐
+- LSTM이 그라디언트 소실 문제를 해소했지만, 무작정 긴 데이터를 모두 기억할 수 있는 건 아님
+- 요즘에는 attention을 통해 이를 해결(100 time-step 을 허용)
+
+##### 그라디언트 클리핑(gradient clipping)
+- 그라디언트 폭주 문제에서 사용되는 기법
+- 역전파 시 임계값을 넘지 못하게 그라디언트를 단순히 자르자
+- 순환 신경망에서 널리 사용됨(RNN)
+- time-step이 길어질수록 BPTT 알고리즘에서 gradient의 덧셈이 많아짐
+	+ 긴 sequence인 경우 더 심화되는 증상
+- gradient 소실 : activation function에서 양 끝 지점의 grad 값 나오는 경우
+- gradient 폭주 : activation function에서 가운데에 grad 값 나오는 경우
+- Adam optimizer 를 사용할 경우 크게 쓰이지 않음(이전에는 threshold, learning rate을 조절해야 했음)
+
+
+
+
 
 
 
